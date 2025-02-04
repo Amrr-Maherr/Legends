@@ -1,6 +1,8 @@
 import LegendsLogo from "../LegendsLogo/LegendsLogo"
 import "../../Style/Welcome/Welcom.css"
+import { useNavigate } from "react-router-dom";
 function Welcome() {
+  const Navigate = useNavigate()
     return (
       <>
         <section>
@@ -11,8 +13,22 @@ function Welcome() {
               </div>
               <div className="col-12">
                 <div className="welcome-buttons">
-                  <button className="login-admin">Log In As Admin</button>
-                  <button className="login-employee">log In As Employee</button>
+                  <button
+                    className="login-admin"
+                    onClick={() => {
+                      Navigate("/admin-signin");
+                    }}
+                  >
+                    Log In As Admin
+                  </button>
+                  <button
+                    className="login-employee"
+                    onClick={() => {
+                      Navigate("");
+                    }}
+                  >
+                    log In As Employee
+                  </button>
                 </div>
               </div>
             </div>

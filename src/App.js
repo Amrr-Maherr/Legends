@@ -5,6 +5,7 @@ import "./App.css";
 import Welcome from "./Components/Welcom/Welcome";
 import SignIn from "./Pages/AdminAuthentication/SignIn";
 import ForgetPassword from "./Pages/ForgetPassword/ForgetPassword";
+import ResetPassword from "./Pages/ResetPassword/ResetPassword";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Welcome/>}/>
             <Route path="admin-signin" element={<SignIn />} />
             <Route path="forget-password" element={<ForgetPassword/>}/>
+            <Route path="reset-password" element={<ResetPassword/>}/>
         </Routes>
         </div>;
       </BrowserRouter>

@@ -2,39 +2,58 @@ import "../../Style/ForgetPassword/ForgetPassword.css";
 import LegendsLogo from "../../Components/LegendsLogo/LegendsLogo";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // استيراد SweetAlert2
 
 function ForgetPassword() {
-    const [Email,setEmail] = useState("")
-    const [Code,setCode] = useState("")
-    const [Password,setPassword] = useState("")
-    const [ConfirmPassword, setConfirmPassword] = useState("")
-    const handelForgetPassword = (event) => {
-        event.preventDefault()
-        if (!Email || !Code || !Password || !ConfirmPassword) {
-            alert("")
-        } else {
-            const FormData = {
-              email: Email,
-              code: Code,
-              password: Password,
-              password_confirmation:ConfirmPassword
-            };
-            axios
-              .post("https://test.ashlhal.com/api/reset-password",FormData)
-                .then((response) => {
-                  alert(response.data.message)
-              })
-                .catch((error) => {
-                  alert(error.response.data.message)
-              });
-        }
+  const Navigate = useNavigate();
+  const [Email, setEmail] = useState("");
+  const [Code, setCode] = useState("");
+  const [Password, setPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
+
+  const handelForgetPassword = (event) => {
+    event.preventDefault();
+    if (!Email || !Code || !Password || !ConfirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Please fill in all fields.",
+      });
+    } else {
+      const FormData = {
+        email: Email,
+        code: Code,
+        password: Password,
+        password_confirmation: ConfirmPassword,
+      };
+      axios
+        .post("https://test.ashlhal.com/api/reset-password", FormData)
+        .then((response) => {
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: response.data.message || "Password reset successful!",
+          }).then(() => {
+            Navigate("/");
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.response?.data?.message || "Password reset failed.",
+          });
+        });
     }
+  };
+
   return (
     <>
       <section className="forget-password-section">
         <div className="container forget-password-container">
           <div className="row forget-password-row">
-            <div className="col-6 forget-password-form-wrapper">
+            <div className="col-xl-6 col-12 forget-password-form-wrapper">
               <div className="forget-password-form">
                 <div className="forget-password-title">
                   <h3 className="forget-password-heading">Reset Password</h3>
@@ -111,7 +130,7 @@ function ForgetPassword() {
                 </form>
               </div>
             </div>
-            <div className="col-6 forget-password-logo-wrapper">
+            <div className="col-xl-6 forget-password-logo-wrapper d-none d-md-block">
               <LegendsLogo className="forget-password-logo" />
             </div>
           </div>

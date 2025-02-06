@@ -1,0 +1,62 @@
+/* تنسيقات الـ Sidebar */
+.sidebar {
+    width: 250px;
+    min-height: 100dvh;
+    /* جعل الـ Sidebar يملأ كامل الشاشة عموديًا */
+    background-color: #0A0A0A;
+    padding-top: 20px;
+}
+
+.sidebar-logo {
+    text-align: center;
+    /* محاذاة الشعار في المنتصف */
+    color: white;
+    /* لون الشعار */
+    font-size: 24px;
+    /* حجم الخط */
+    margin-bottom: 30px;
+    /* إضافة مسافة أسفل الشعار */
+}
+
+.sidebar-links {
+    display: flex;
+    flex-direction: column;
+    /* ترتيب الروابط عموديًا */
+    padding: 0;
+    list-style: none;
+    /* إزالة النقاط */
+}
+
+.sidebar-links li {
+    margin-bottom: 20px;
+    /* إضافة مسافة بين العناصر */
+}
+
+.sidebar-links a {
+    color: white;
+    /* لون النص في الروابط */
+    text-decoration: none;
+    /* إزالة التسطير */
+    padding: 10px 25px;
+    /* حشو داخلي للروابط */
+    display: flex;
+    /* استخدام flex لتوضيح الأيقونة والنص بشكل أفقي */
+    align-items: center;
+    /* محاذاة الأيقونة والنص عموديًا */
+    transition: background-color 0.3s;
+    /* تأثير عند المرور */
+}
+
+.sidebar-links a:hover {
+    background-color: #FF4811E5;
+    /* تغيير الخلفية عند المرور */
+    border-radius: 5px;
+    /* إضافة حواف دائرية عند المرور */
+}
+
+.sidebar-links a i {
+    margin-right: 10px;
+    /* إضافة مسافة بين الأيقونة والنص */
+    font-size: 18px;
+    /* تغيير حجم الأيقونة */
+}

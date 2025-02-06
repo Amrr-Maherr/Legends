@@ -1,3 +1,71 @@
 body {
   background-color: #000000;
 }
+/* sweetalert2.css */
+
+/* تغيير لون الخلفية */
+.swal2-popup {
+  background-color: #1e293b;
+  /* لون الخلفية الداكن */
+  color: #ffffff;
+  /* لون النص الأبيض */
+  border: 1px solid #334155;
+  /* حدود */
+}
+
+/* تنسيق العنوان */
+.swal2-title {
+  color: #ffffff;
+  /* لون العنوان الأبيض */
+}
+
+/* تنسيق الرسالة */
+.swal2-content {
+  color: #cbd5e1;
+  /* لون الرسالة الرمادي الفاتح */
+}
+
+/* تنسيق الأزرار */
+.swal2-styled.swal2-confirm {
+  background-color: #4caf50 !important;
+  /* أخضر للزر الرئيسي */
+  border: none;
+  color: #ffffff;
+}
+
+.swal2-styled.swal2-cancel {
+  background-color: #f44336 !important;
+  /* أحمر لزر الإلغاء */
+  border: none;
+  color: #ffffff;
+}
+
+/* هوفر على الأزرار */
+.swal2-styled.swal2-confirm:hover {
+  background-color: #388e3c !important;
+}
+
+.swal2-styled.swal2-cancel:hover {
+  background-color: #d32f2f !important;
+}
+
+/* تغيير لون الأيقونات */
+.swal2-icon.swal2-success .swal2-success-ring {
+  border: 0.4em solid rgba(76, 175, 80, 0.2);
+  /* تغيير لون دائرة النجاح */
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-line] {
+  background-color: #4caf50;
+  /* تغيير لون علامة النجاح */
+}
+
+.swal2-icon.swal2-error [class^=swal2-error-line] {
+  background-color: #f44336;
+  /* تغيير لون علامة الخطأ */
+}
+
+.swal2-icon.swal2-error .swal2-error-x {
+  border-color: #f44336;
+  /* تغيير لون حرف X في الخطأ */
+}

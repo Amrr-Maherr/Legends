@@ -1,0 +1,68 @@
+.my-tasks-card {
+        background-color: #101013;
+        margin: 10px 0px;
+        padding: 15px;
+        font-size: 14px;
+        font-weight: 300;
+        color: white;
+        -o-border-radius: 8px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        border-radius: 8px;
+}
+.my-tasks-card h3 {
+    font-size: 20px;
+}
+.my-tasks-col , .my-home {
+    height: 100dvh;
+    overflow-y: scroll;
+}
+.my-tasks-col::-webkit-scrollbar,
+.my-home::-webkit-scrollbar {
+    width: 10px;
+    /* عرض شريط التمرير */
+}
+
+/* تخصيص مسار شريط التمرير (track) */
+.my-tasks-col::-webkit-scrollbar-track,
+.my-home::-webkit-scrollbar-track {
+    background: black;
+    /* لون خلفية المسار */
+}
+
+/* تخصيص زر شريط التمرير (thumb) */
+.my-tasks-col::-webkit-scrollbar-thumb,
+.my-home::-webkit-scrollbar-thumb {
+    background: #FF4811E5;
+    /* لون الزر */
+    border-radius: 5px;
+    /* تدوير حواف الزر */
+}
+
+/* تخصيص زر شريط التمرير عند التحويم */
+.my-tasks-col::-webkit-scrollbar-thumb:hover,
+.my-home::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* لون الزر عند التحويم */
+}
+
+/* تخصيص الزوايا (corner) - نادرة الاستخدام */
+.my-tasks-col::-webkit-scrollbar-corner,
+.my-home::-webkit-scrollbar-corner {
+    background: #ccc;
+    /* لون الزاوية */
+}
+.task-stats .one , .task-stats .two , .task-stats .three {
+    background-color: #101013;
+    padding: 15px;
+    width: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.one h3 , .two h3 , .three h3 {
+        font-size: 14px;
+        font-weight: 400;
+        color: #FF4811;
+}

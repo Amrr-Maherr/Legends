@@ -1,0 +1,153 @@
+.navbar {
+    background-color: #0A0A0A;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+}
+
+.navbar-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+}
+.navbar-title span {
+    color: #FF4811;
+}
+.navbar .navbar-menu img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+/* تنسيق عام للمودال */
+.modal {
+    display: none;
+    /* تكون غير مرئية بشكل افتراضي */
+    position: fixed;
+    /* لتثبيت المودال في الشاشة */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* خلفية داكنة قليلاً */
+    z-index: 9999;
+    /* تعيين الأولوية للمودال */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+    /* عرض المودال عند تفعيل الكلاس show */
+}
+
+.modal-dialog {
+    background-color: black;
+    /* خلفية بيضاء للمودال */
+    border-radius: 8px;
+    /* زوايا مدورة */
+    width: 100%;
+    max-width: 500px;
+    /* تحديد أقصى عرض */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* إضافة ظل للمودال */
+    padding: 20px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+   background-color: #0A0A0A;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #000;
+}
+
+.close:hover {
+    color: #ff0000;
+    /* تغيير اللون عند التمرير */
+}
+
+/* تنسيق الجسم داخل المودال */
+.modal-body {
+    padding: 20px 0;
+    background-color: #0A0A0A;
+}
+
+/* تنسيق الفورم داخل المودال */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    /* تغيير اللون عند التركيز */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+/* تنسيق زر الإغلاق داخل المودال */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #0A0A0A;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primar {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    /* تغيير اللون عند التمرير */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    /* تغيير اللون عند التمرير */
+}

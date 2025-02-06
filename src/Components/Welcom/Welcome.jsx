@@ -24,7 +24,7 @@ function Welcome() {
                   <button
                     className="login-employee"
                     onClick={() => {
-                      Navigate("");
+                      Navigate("/login-employee");
                     }}
                   >
                     log In As Employee

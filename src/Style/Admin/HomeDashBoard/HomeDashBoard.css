@@ -1,0 +1,261 @@
+.employee-card-inner {
+    background-color: #101013;
+    padding: 10px 20px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    position: relative;
+}
+.rateEmployee-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 25px;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+}
+.employee-card-inner .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.employee-card-inner .card-head img {
+       width: 80px;
+       height: 80px;
+       border-radius: 50%;
+       -webkit-border-radius: 50%;
+       -moz-border-radius: 50%;
+       -ms-border-radius: 50%;
+       -o-border-radius: 50%;
+       border: 1px solid red;
+}
+.employee-card-inner .card-head h5 {
+        font-size: 20px;
+        font-weight: 500;
+        color: white;
+}
+.employee-card-inner .employee-card-body{
+    background-color: #1A1A1A;
+    border-radius: 14px;
+    -webkit-border-radius: 14px;
+    -moz-border-radius: 14px;
+    -ms-border-radius: 14px;
+    -o-border-radius: 14px;
+} 
+.employee-card-inner .employee-card-body .employee-position {
+        font-size: 16px;
+        font-weight: 400;
+        color: #FFFFFF;
+}
+.employees-title , .tasks-title {
+    color: white;
+}
+/*  */
+.employee-col , .task-col {
+    height: 100dvh;
+    overflow-y: scroll;
+}
+/* تخصيص شريط التمرير الكامل */
+.employee-col::-webkit-scrollbar,
+.task-col::-webkit-scrollbar {
+    width: 10px;
+    /* عرض شريط التمرير */
+}
+
+/* تخصيص مسار شريط التمرير (track) */
+.employee-col::-webkit-scrollbar-track,
+.task-col::-webkit-scrollbar-track {
+    background: black;
+    /* لون خلفية المسار */
+}
+
+/* تخصيص زر شريط التمرير (thumb) */
+.employee-col::-webkit-scrollbar-thumb,
+.task-col::-webkit-scrollbar-thumb {
+    background: #FF4811E5;
+    /* لون الزر */
+    border-radius: 5px;
+    /* تدوير حواف الزر */
+}
+
+/* تخصيص زر شريط التمرير عند التحويم */
+.employee-col::-webkit-scrollbar-thumb:hover,
+.task-col::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* لون الزر عند التحويم */
+}
+
+/* تخصيص الزوايا (corner) - نادرة الاستخدام */
+.employee-col::-webkit-scrollbar-corner,
+.task-col::-webkit-scrollbar-corner {
+    background: #ccc;
+    /* لون الزاوية */
+}
+/*  */
+.task-col .task-list .task-item {
+    background-color: #101013;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    position: relative;
+}
+.task-item .taskIcon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.task-item {
+        font-size: 14px;
+        font-weight: 400;
+        color: #FFFFFF;
+}
+.task-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+/* تنسيق عام للمودال */
+.modal {
+    display: none;
+    /* تكون غير مرئية بشكل افتراضي */
+    position: fixed;
+    /* لتثبيت المودال في الشاشة */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* خلفية داكنة قليلاً */
+    z-index: 9999;
+    /* تعيين الأولوية للمودال */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+    /* عرض المودال عند تفعيل الكلاس show */
+}
+
+.modal-dialog {
+    background-color: black;
+    /* خلفية سوداء للمودال */
+    border-radius: 8px;
+    /* زوايا مدورة */
+    width: 100%;
+    max-width: 500px;
+    /* تحديد أقصى عرض */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* إضافة ظل للمودال */
+    padding: 20px;
+    color: white;
+    /* إضافة لون الخط الأبيض */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: #0a0a0a;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+    /* إضافة لون الخط الأبيض */
+}
+
+.close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #fff;
+    opacity: 1;
+}
+
+.close:hover {
+    color: #ff0000;
+    /* تغيير اللون عند التمرير */
+}
+
+/* تنسيق الجسم داخل المودال */
+.modal-body {
+    padding: 20px 0;
+    background-color: #0a0a0a;
+}
+
+/* تنسيق الفورم داخل المودال */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    /* تغيير اللون عند التركيز */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+/* تنسيق زر الإغلاق داخل المودال */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #0a0a0a;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #cc0000;
+    /* تغيير اللون عند التمرير */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    /* تغيير اللون عند التمرير */
+}

@@ -1,0 +1,85 @@
+.employee-login-section .employee-login-container .employee-login-row {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.employee-login-section .employee-login-container .employee-login-row .employee-login-form-column .employee-login-form {
+    max-width: 400px;
+    margin: auto;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-login-form-column .employee-login-title h3 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #FF4811;
+    margin-bottom: 10px;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-login-form-column .employee-form-group label {
+    font-size: 16px;
+    font-weight: 400;
+    color: white;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-login-form-column .employee-form-group input {
+    height: 53px;
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: #101013;
+    color: white;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-form-group input::placeholder {
+    font-size: 14px;
+    font-weight: 300;
+    color: #535353;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-checkbox-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 15px 0px;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-checkbox-group .form-check {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.employee-login-section .employee-login-container .employee-login-row .employee-login-btn {
+    border: none;
+    background-color: #FF4811;
+    font-size: 20px;
+    font-weight: 400;
+    color: white;
+    display: block;
+    margin: 0 auto;
+    padding: 5px 35px;
+    cursor: pointer;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+
+.employee-login-section .employee-login-container .employee-login-row a {
+    font-size: 14px;
+    font-weight: 300;
+    text-decoration: none;
+    color: #FFFFFF;
+}

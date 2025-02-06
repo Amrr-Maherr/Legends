@@ -1,0 +1,26 @@
+/* NavBar.css */
+.navbar {
+    background-color: #0A0A0A;
+    padding: 10px;
+}
+
+.navbar-welcome .navbar-welcome-text {
+    color: #FF4811;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    margin-top: 10px;
+}
+
+.navbar ul li {
+    margin-right: 15px;
+}
+
+.navbar span {
+    color: #FF4811;
+    text-decoration: none;
+    font-size: 20px;
+}

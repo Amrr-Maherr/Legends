@@ -1,0 +1,16 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: row;
+    /* وضع العناصر بجانب بعضها */
+}
+.dashboard-content {
+    flex: 1;
+    /* باقي المساحة من الصفحة تأخذها الـ content */
+    display: flex;
+    flex-direction: column;
+    /* جعل الـ Navbar في الأعلى */
+}
+
+.content {
+    padding: 0px 20px;
+}

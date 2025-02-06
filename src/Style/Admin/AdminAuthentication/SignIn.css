@@ -1,57 +1,51 @@
 .signin-section .signin-container .signin-row {
-    height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100dvh;
 }
-.signin-section .signin-container .signin-row .signin-form-column {
-
+.signin-section .signin-container .signin-row .admin-signin-form .signin-title {
+                font-size: 36px;
+                font-weight: 800;
+                color: #FF4811;
 }
-.signin-section .signin-container .signin-row .signin-form-column .admin-signin-form {
+.signin-section .signin-container .signin-row .admin-signin-form .signin-form .email-input , .signin-section .signin-container .signin-row .admin-signin-form .signin-form .password-input {
+                height: 53px;
+                border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -ms-border-radius: 5px;
+                -o-border-radius: 5px;
+                background-color: #101013;
+                border: none;
+                outline: none;
 }
-.signin-section .signin-container .signin-row .signin-form-column .admin-signin-form .admin-signin-title h3 {
-        font-size: 36px;
-        font-weight: 800;
-        color: #FF4811;
-        margin-bottom: 10px;
+.signin-section .signin-container .signin-row .admin-signin-form .signin-form .email-input::placeholder,
+.signin-section .signin-container .signin-row .admin-signin-form .signin-form .password-input::placeholder {
+                font-size: 14px;
+                font-weight: 300;
+                color: #535353;
 }
-.signin-section .signin-container .signin-row .signin-form-column .admin-signin-form .signin-form label{
-        font-size: 16px;
-        font-weight: 400;
-        color: white;
-        margin-bottom: 10px;
+.signin-section .signin-container .signin-row .admin-signin-form .signin-form label {
+                font-size: 16px;
+                font-weight: 400;
+                color: #FFFFFF;
 }
-.signin-section .signin-container .signin-row .signin-form-column .admin-signin-form .signin-form .email-input , .signin-section .signin-container .signin-row .signin-form-column .admin-signin-form .signin-form .password-input {
-    height: 43px;
-    border: none;
-    outline: none;
-    background-color: #101013;
-}
-.signin-section .signin-container .signin-row .signin-form-column .admin-signin-form .signin-form .email-input::placeholder , .signin-section .signin-container .signin-row .signin-form-column .admin-signin-form .signin-form .password-input::placeholder {
-        font-size: 14px;
-        font-weight: 300;
-        color: #535353;
-}
-.signin-section .signin-container .signin-row .checkbox-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin: 15px 0px;
-}
-.signin-section .signin-container .signin-row .signin-btn {
-    border: none;
-    background-color: #FF4811;
-        font-size: 20px;
-        font-weight: 400;
-        color: white;
-        display: block;
-        margin: 0px auto;
-        padding: 5px 35px;
-}
-.signin-section .signin-container .signin-row a {
-        font-size: 14px;
-        font-weight: 300;
+.form-group a {
         text-decoration: none;
-        color: #FFFFFF;
+        color: white;
+}
+.signin-section .signin-btn {
+                background-color: #FF4811;
+                display: block;
+                margin: 0px auto;
+                width: 188px;
+                -o-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -ms-border-radius: 5px;
+                border-radius: 5px;
+                        font-size: 20px;
+                        font-weight: 400;
+                        color: #FFFFFF;
 }

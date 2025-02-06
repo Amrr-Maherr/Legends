@@ -1,0 +1,38 @@
+/* Department.css */
+
+.employee-de-card {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #151515;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+        font-size: 20px;
+        font-weight: 300;
+        color: white;
+}
+.employee-de-card button {
+    font-size: 15px;
+    border: none;
+    background-color: #FF4811;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    color: white;
+}
+.employee-de-card p {
+    margin: 0;
+    font-size: 16px;
+}
+.Department-title {
+        font-size: 32px;
+        font-weight: 500;
+        color: #FF4811;
+        margin: 10px 0px;
+}

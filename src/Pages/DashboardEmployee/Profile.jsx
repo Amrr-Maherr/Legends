@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Loader from "../../Components/Loader/Loader"; // استيراد مكون Loader
-import Swal from "sweetalert2"; // استيراد SweetAlert2
+import Loader from "../../Components/Loader/Loader";
+import Swal from "sweetalert2";
 
 function Profile() {
   const [Data, setData] = useState({});
@@ -11,24 +11,22 @@ function Profile() {
   const [newDepartment, setNewDepartment] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newImage, setNewImage] = useState(null);
+  const [newBankAccount, setNewBankAccount] = useState(""); // حالة جديدة لـ Bank Account
   const [shifts, setShifts] = useState([]);
-  const [loading, setLoading] = useState(true); // حالة التحميل
-  const [error, setError] = useState(null); // حالة الخطأ
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const token = JSON.parse(localStorage.getItem("AuthToken"));
-
-  const API_ENDPOINT = "https://test.ashlhal.com/api/profile";
-  const UPDATE_PROFILE_ENDPOINT = "https://test.ashlhal.com/api/update-profile";
-  const SHIFTS_ENDPOINT = "https://test.ashlhal.com/api/shifts";
-  const START_SHIFT_ENDPOINT = "https://test.ashlhal.com/api/shifts"; // **تم التحديث بنقطة النهاية**
-  const END_SHIFT_ENDPOINT = "https://test.ashlhal.com/api/shifts"; // **تم التحديث بنقطة النهاية**
+  const API_BASE_URL = "https://test.ashlhal.com/api";
+  const API_ENDPOINT = `${API_BASE_URL}/profile`;
+  const UPDATE_PROFILE_ENDPOINT = `${API_BASE_URL}/update-profile`;
+  const SHIFTS_ENDPOINT = `${API_BASE_URL}/shifts`;
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // بداية التحميل
-      setError(null); // مسح أي خطأ سابق
+      setLoading(true);
+      setError(null);
       try {
-        // جلب بيانات الملف الشخصي
         const profileResponse = await axios.get(API_ENDPOINT, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -40,11 +38,11 @@ function Profile() {
           setNewName(profileData.name || "");
           setNewDepartment(profileData.department?.name || "");
           setNewEmail(profileData.email || "");
+          setNewBankAccount(profileData.bank_account || ""); // تعيين قيمة أولية لـ Bank Account
         } else {
           throw new Error("Invalid profile data");
         }
 
-        // جلب بيانات الورديات
         const shiftsResponse = await axios.get(SHIFTS_ENDPOINT, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -59,13 +57,12 @@ function Profile() {
         console.error("Error fetching data:", error);
         setError(error.response?.data?.message || "An error occurred");
         Swal.fire({
-          // عرض تنبيه بالخطأ باستخدام SweetAlert2
           icon: "error",
           title: "Error!",
           text: error.response?.data?.message || "An error occurred",
         });
       } finally {
-        setLoading(false); // نهاية التحميل
+        setLoading(false);
       }
     };
 
@@ -82,6 +79,7 @@ function Profile() {
     setNewDepartment(Data?.department?.name || "");
     setNewEmail(Data?.email || "");
     setNewImage(null);
+    setNewBankAccount(Data?.bank_account || ""); // إعادة تعيين Bank Account عند الإلغاء
   };
 
   const handleSaveClick = async () => {
@@ -89,6 +87,7 @@ function Profile() {
     formData.append("name", newName);
     formData.append("email", newEmail);
     formData.append("department", newDepartment);
+    formData.append("bank_account", newBankAccount); // إضافة Bank Account إلى FormData
     if (newImage) {
       formData.append("image", newImage);
     }
@@ -97,14 +96,13 @@ function Profile() {
       const response = await axios.post(UPDATE_PROFILE_ENDPOINT, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
         },
       });
 
       console.log("Profile updated successfully:", response.data);
       setData(response.data.profile);
       setIsEditing(false);
-      // قم بإعادة جلب البيانات من واجهة برمجة التطبيقات
+
       const profileResponse = await axios.get(API_ENDPOINT, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -112,9 +110,8 @@ function Profile() {
       if (profileResponse.data && profileResponse.data.profile) {
         const profileData = profileResponse.data.profile;
         console.log(profileData);
-        setData(profileData); // قم بتحديث البيانات بالبيانات الجديدة
+        setData(profileData);
         Swal.fire({
-          // عرض تنبيه بالنجاح باستخدام SweetAlert2
           icon: "success",
           title: "Success!",
           text: response.data.message || "Profile updated successfully!",
@@ -124,10 +121,8 @@ function Profile() {
       }
     } catch (error) {
       console.error("Error updating profile:", error.response.data.message);
-      // يمكنك هنا عرض رسالة خطأ للمستخدم
-      setError(error.response?.data?.message || "An error occurred"); // تعيين الخطأ
+      setError(error.response?.data?.message || "An error occurred");
       Swal.fire({
-        // عرض تنبيه بالخطأ باستخدام SweetAlert2
         icon: "error",
         title: "Error!",
         text: error.response?.data?.message || "An error occurred!",
@@ -139,35 +134,95 @@ function Profile() {
     setNewImage(event.target.files[0]);
   };
 
-  // دالة لبدء الوردية
-  const handleStartShift = (shiftId) => {
-    // تم إزالة طلب الخادم مؤقتًا
-    console.log(`Shift ${shiftId} started (locally)!`);
-    // قم بتحديث قائمة الورديات بعد البدء
-    //fetchShifts();
+  const handleStartShift = async (shiftId) => {
     Swal.fire({
-      // عرض تنبيه بالنجاح باستخدام SweetAlert2
-      icon: "success",
-      title: "Success!",
-      text: `Shift ${shiftId} started (locally)!`,
+      title: "Are you sure?",
+      text: "Do you want to start this shift?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, start it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(
+            `${API_BASE_URL}/shifts/${shiftId}/start`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          console.log(`Shift ${shiftId} started successfully!`, response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Shift started successfully!",
+          });
+
+          setShifts((prevShifts) =>
+            prevShifts.map((shift) =>
+              shift.id === shiftId ? { ...shift, status: "active" } : shift
+            )
+          );
+        } catch (error) {
+          console.error("Error starting shift:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.response?.data?.message || "Failed to start the shift.",
+          });
+        }
+      }
     });
   };
 
-  // دالة لإنهاء الوردية
-  const handleEndShift = (shiftId) => {
-    // تم إزالة طلب الخادم مؤقتًا
-    console.log(`Shift ${shiftId} ended (locally)!`);
-    // قم بتحديث قائمة الورديات بعد الإنهاء
-    //fetchShifts();
+  const handleEndShift = async (shiftId) => {
     Swal.fire({
-      // عرض تنبيه بالنجاح باستخدام SweetAlert2
-      icon: "success",
-      title: "Success!",
-      text: `Shift ${shiftId} ended (locally)!`,
+      title: "Are you sure?",
+      text: "Do you want to end this shift?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, end it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(
+            `${API_BASE_URL}/shifts/${shiftId}/end`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          console.log(`Shift ${shiftId} ended successfully!`, response.data);
+
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Shift ended successfully!",
+          });
+
+          setShifts((prevShifts) =>
+            prevShifts.map((shift) =>
+              shift.id === shiftId ? { ...shift, status: "completed" } : shift
+            )
+          );
+        } catch (error) {
+          console.error("Error ending shift:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.response?.data?.message || "Failed to end the shift.",
+          });
+        }
+      }
     });
   };
 
-  // دالة لجلب الورديات
   const fetchShifts = async () => {
     try {
       const response = await axios.get(SHIFTS_ENDPOINT, {
@@ -179,9 +234,8 @@ function Profile() {
         "Error fetching shifts:",
         error.response?.data?.message || error.message
       );
-      setError(error.response?.data?.message || "An error occurred"); // تعيين الخطأ
+      setError(error.response?.data?.message || "An error occurred");
       Swal.fire({
-        // عرض تنبيه بالخطأ باستخدام SweetAlert2
         icon: "error",
         title: "Error!",
         text: error.response?.data?.message || "Error fetching shifts!",
@@ -189,7 +243,6 @@ function Profile() {
     }
   };
 
-  // دالة لتحويل الوقت إلى تنسيق 12 ساعة مع AM/PM
   const convertTo12Hour = (time24) => {
     if (!time24) return "";
 
@@ -205,7 +258,7 @@ function Profile() {
     }
 
     if (hour === 0) {
-      hour = 12; // منتصف الليل
+      hour = 12;
     }
 
     return `${hour}:${minutes} ${period}`;
@@ -221,7 +274,6 @@ function Profile() {
             <div className="card bg-dark text-white">
               <div className="card-body">
                 {isEditing ? (
-                  // فورم التعديل
                   <div>
                     <h5 className="card-title">Edit Profile</h5>
                     <div className="mb-3">
@@ -251,6 +303,16 @@ function Profile() {
                         onChange={(e) => setNewEmail(e.target.value)}
                       />
                     </div>
+                    {/* إضافة حقل Bank Account */}
+                    <div className="mb-3">
+                      <label className="form-label">Bank Account:</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={newBankAccount}
+                        onChange={(e) => setNewBankAccount(e.target.value)}
+                      />
+                    </div>
 
                     <div className="mb-3">
                       <label className="form-label">Image:</label>
@@ -275,7 +337,6 @@ function Profile() {
                     </button>
                   </div>
                 ) : (
-                  // عرض معلومات الملف الشخصي
                   <div>
                     <h5 className="card-title">Profile Information</h5>
                     <div className="text-center mb-3">
@@ -303,6 +364,10 @@ function Profile() {
                     <p className="card-text">
                       <strong>Email:</strong> {Data?.email}
                     </p>
+                    {/* إضافة عرض Bank Account */}
+                    <p className="card-text">
+                      <strong>Bank Account:</strong> {Data?.bank_account}
+                    </p>
                     <button
                       className="btn btn-primary"
                       onClick={handleEditClick}
@@ -314,7 +379,6 @@ function Profile() {
               </div>
             </div>
 
-            {/* جدول الورديات */}
             <div className="card mt-4 bg-dark">
               <div className="card-body">
                 <h5 className="card-title">Shifts</h5>
@@ -328,7 +392,7 @@ function Profile() {
                         <th>To</th>
                         <th>Day</th>
                         <th>Status</th>
-                        <th>Action</th> {/* عمود الإجراءات */}
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -337,22 +401,39 @@ function Profile() {
                           <td>{shift.id}</td>
                           <td>{shift.employee_name}</td>
                           <td>{convertTo12Hour(shift.from)}</td>
-                          <td>{convertTo12Hour(shift.to)}</td>
+                          <td>{shift.to}</td>
                           <td>{shift.day}</td>
                           <td>{shift.status}</td>
                           <td>
-                            <button
-                              className="btn btn-success btn-sm me-1"
-                              onClick={() => handleStartShift(shift.id)}
-                            >
-                              Start
-                            </button>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleEndShift(shift.id)}
-                            >
-                              End
-                            </button>
+                            {/*  الزر يعرض بناءً على حالة الوردية */}
+                            {shift.status === "active" ? (
+                              // If shift is active, show only the "End" button
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleEndShift(shift.id)}
+                              >
+                                End
+                              </button>
+                            ) : shift.status === "completed" ? (
+                              // If shift is completed, show the "Completed" message
+                              <span>Shift Completed</span>
+                            ) : (
+                              // If shift is neither active nor completed, show both buttons
+                              <>
+                                <button
+                                  className="btn btn-success btn-sm me-1"
+                                  onClick={() => handleStartShift(shift.id)}
+                                >
+                                  Start
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleEndShift(shift.id)}
+                                >
+                                  End
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                       ))}

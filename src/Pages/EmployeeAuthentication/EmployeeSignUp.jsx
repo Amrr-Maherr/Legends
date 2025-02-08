@@ -17,6 +17,15 @@ function EmployeeSignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (password.length < 8) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Password must be at least 8 characters long.",
+      });
+      return;
+    }
+
     if (password !== confirmPassword) {
       Swal.fire({
         icon: "error",
@@ -33,7 +42,7 @@ function EmployeeSignUp() {
       phoneNumber: phoneNumber,
       bankAccount: bankAccount,
       adminCode: adminCode,
-      password: password, // Consider NOT storing the password in localStorage
+      password: password, // **IMPORTANT:**  See note below about storing passwords!
     };
 
     // Check if all fields have values before storing

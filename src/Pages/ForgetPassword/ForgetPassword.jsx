@@ -3,7 +3,7 @@ import LegendsLogo from "../../Components/LegendsLogo/LegendsLogo";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; // استيراد SweetAlert2
+import Swal from "sweetalert2";
 
 function ForgetPassword() {
   const Navigate = useNavigate();
@@ -19,6 +19,19 @@ function ForgetPassword() {
         icon: "error",
         title: "Error!",
         text: "Please fill in all fields.",
+      });
+    } else if (Password.length < 8) {
+      // إضافة التحقق من طول كلمة المرور
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Password must be at least 8 characters long.",
+      });
+    } else if (Password !== ConfirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Passwords do not match.",
       });
     } else {
       const FormData = {

@@ -52,8 +52,12 @@ function Navbar() {
     formData.append("name", TaskName);
     formData.append("employee_id", TaskEmployee);
     formData.append("description", TaskText);
-    formData.append("image", TaskImage); // إلحاق الملف بالـ FormData
-    formData.append("deadline", TaskDeadline); // إضافة حقل Deadline
+    formData.append("image", TaskImage);
+    formData.append("deadline", TaskDeadline);
+
+    // طباعة البيانات في الكونسول
+    console.log("FormData being sent:");
+    formData.forEach((value, key) => console.log(`${key}:`, value));
 
     try {
       const response = await axios.post(
@@ -74,7 +78,6 @@ function Navbar() {
           text: "Task added successfully.",
         });
         handleCloseModal();
-        // إعادة تهيئة الحقول بعد النجاح
         setTaskName("");
         setTaskText("");
         setTaskEmployee("");
@@ -93,6 +96,7 @@ function Navbar() {
     }
   };
 
+
   return (
     <nav className="navbar">
       <div className="navbar-title">
@@ -105,7 +109,7 @@ function Navbar() {
           style={{ cursor: "pointer" }}
           className="d-flex align-items-center gap-2"
         >
-          Add Shift
+          Add Task
           <img src={AddIcon} alt="Add Task" />
         </div>
       </ul>

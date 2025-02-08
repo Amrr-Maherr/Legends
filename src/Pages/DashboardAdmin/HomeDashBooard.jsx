@@ -295,7 +295,7 @@ function HomeDashBoard() {
               {/* تم استبداله باللودر العام */}
               {error && <div>Error: {error}</div>}
               {!loading && !error && (
-                <div className="list-group task-list">
+                <div className="list-group  d-flex flex-column-reverse task-list">
                   {TaskData.map((task) => (
                     <div
                       key={task.id}

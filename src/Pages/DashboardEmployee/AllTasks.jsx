@@ -18,6 +18,8 @@ function AllTasks() {
         if (response.data && Array.isArray(response.data.data)) {
           setTasks(response.data.data); // Access the 'data' array
           setError(null);
+          console.log(response.data.data);
+          
         } else {
           throw new Error("Invalid tasks data");
         }

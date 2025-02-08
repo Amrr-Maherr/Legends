@@ -57,6 +57,11 @@ function Sidebar() {
           </Link>
         </li>
         <li>
+          <Link to="/admin-dashboard/all-tasks" className="sidebar-link">
+            <i className="fa fa-tasks"></i> Tasks
+          </Link>
+        </li>
+        <li>
           <Link to="/admin-dashboard/settings" className="sidebar-link">
             <i className="fa fa-cogs"></i> System Settings
           </Link>

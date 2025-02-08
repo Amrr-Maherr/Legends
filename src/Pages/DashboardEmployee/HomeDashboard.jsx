@@ -131,7 +131,7 @@ function HomeDashboard() {
                       </div>
                     </>
                   ))}
-                  <div className="chart vh-100">
+                  <div className="chart" style={{ height: "400px" }}>
                     <Line
                       data={chartData}
                       options={{ responsive: true, maintainAspectRatio: false }}
@@ -140,15 +140,48 @@ function HomeDashboard() {
                 </div>
                 <div className="col-xl-4 my-tasks-col">
                   {TasksData.map((task) => (
-                    <div className="my-tasks-card" key={task.id}>
+                    <div
+                      className="my-tasks-card"
+                      key={task.id}
+                      style={{ position: "relative" }}
+                    >
                       <Link
-                        to={`/employee-dashboard/task-details/${task.id}`}
-                        style={{ textDecoration: "none", color: "#FF4811B2" }}
+                        to={`/employee-dashboard/employee-task-details/${task.id}`}
+                        style={{
+                          textDecoration: "none",
+                          color: "#FF4811B2",
+                          fontSize: "25px",
+                        }}
                       >
-                        <h3>Description: {task.description}</h3>
+                        <i
+                          className="fa fa-eye"
+                          style={{ position: "absolute", right: "15px" }}
+                        ></i>
                       </Link>
-                      <p>Status: {task.status}</p>
-                      <span>Team: {task.employee_name}</span>
+                      <h6>
+                        <strong
+                          style={{ fontSize: "20px", fontWeight: "bold" }}
+                        >
+                          Description
+                        </strong>
+                        : {task.description}
+                      </h6>
+                      <p>
+                        <strong
+                          style={{ fontSize: "20px", fontWeight: "bold" }}
+                        >
+                          Status
+                        </strong>
+                        : {task.status}
+                      </p>
+                      <span>
+                        <strong
+                          style={{ fontSize: "20px", fontWeight: "bold" }}
+                        >
+                          Team
+                        </strong>
+                        : {task.employee_name}
+                      </span>
                     </div>
                   ))}
                 </div>

@@ -1,13 +1,15 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "../../Style/Admin/HomeDashBoard/HomeDashBoard.css";
 import taskIcon from "../../Assets/Vector.svg";
 import { Link } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader"; // استيراد مكون Loader
+import Chart from "chart.js/auto"; // Import Chart.js
 
 function HomeDashBoard() {
   const [EmployeeData, setEmployeeData] = useState([]);
   const [TaskData, setTaskData] = useState([]);
+  const [chartData, setChartData] = useState(null); // حالة لبيانات المخطط
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -15,6 +17,9 @@ function HomeDashBoard() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskStatus, setTaskStatus] = useState(""); // حالة المهمة
   const token = JSON.parse(localStorage.getItem("AuthToken"));
+
+  // Chart ref
+  const chartRef = useRef(null);
 
   // Get employees data
   useEffect(() => {
@@ -50,6 +55,28 @@ function HomeDashBoard() {
       })
       .catch((error) => {
         setError(error.message || "An error occurred while fetching tasks");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [token]);
+
+  // Get chart data
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    axios
+      .get("https://test.ashlhal.com/api/manager-stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setChartData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        setError(
+          error.message || "An error occurred while fetching chart data"
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -142,6 +169,57 @@ function HomeDashBoard() {
     }
   };
 
+  // تجهيز بيانات المخطط
+  const chartLabels = ["Tasks", "Shifts"];
+  const chartValues = chartData
+    ? [chartData["tasks count"], chartData["shifts count"]]
+    : [];
+
+  // Chart.js configuration
+  useEffect(() => {
+    // تدمير المخطط السابق إذا كان موجوداً
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+
+    const chartCanvas = document.getElementById("myChart"); // الحصول على الـ Canvas من الـ DOM
+    if (!chartCanvas) return; // التحقق من وجود الـ Canvas
+
+    const ctx = chartCanvas.getContext("2d");
+
+    chartRef.current = new Chart(ctx, {
+      type: "line", // نوع المخطط (يمكن تغييره)
+      data: {
+        labels: chartLabels, // الأسماء على المحور الأفقي
+        datasets: [
+          {
+            label: "Tasks vs Shifts", // عنوان مجموعة البيانات
+            data: chartValues, // البيانات المراد عرضها
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+            ],
+            borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy(); // تدمير المخطط عند إزالة 컴포넌트
+      }
+    };
+  }, [chartData]);
+
   return (
     <>
       {loading && <Loader />} {/* عرض اللودر إذا كانت حالة التحميل صحيحة */}
@@ -200,10 +278,18 @@ function HomeDashBoard() {
                       </div>
                     </div>
                   ))}
+                  <div className="col-xl-8 col-12 w-100 d-flex justify-content-center">
+                    <div
+                      className="chart w-100 d-flex justify-content-center "
+                      style={{ height: "300px" }}
+                    >
+                      <canvas id="myChart"></canvas>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-            <div className="col-4 p-4 task-col">
+            <div className="col-xl-4 col-12  p-4 task-col">
               <h1 className="tasks-title">Tasks</h1>
               {/* {loading && <div>Loading tasks...</div>} */}{" "}
               {/* تم استبداله باللودر العام */}
@@ -214,21 +300,29 @@ function HomeDashBoard() {
                     <div
                       key={task.id}
                       className="list-group-item task-item mb-3"
-                      style={{ cursor: "pointer" }}
+                      style={{ padding: "15px" }}
                     >
                       <div className="tass-info">
                         <Link
                           to={`/admin-dashboard/task-details/${task.id}`}
-                          style={{ textDecoration: "none", color: "#FFFFFF" }}
+                          style={{
+                            textDecoration: "none",
+                            position: "absolute",
+                            right: "35px",
+                            fontSize: "20px",
+                            top: "0",
+                            color: "#FF4811B2",
+                          }}
                         >
-                          <h5
-                            className="task-title mb-1"
-                            style={{ fontSize: "14px", color: "#FF4811B2" }}
-                          >
-                            <span style={{ fontSize: "14px" }}>Name:</span>
-                            {task.name}
-                          </h5>
+                          <i className="fa fa-eye"></i>
                         </Link>
+                        <h5
+                          className="task-title mb-1"
+                          style={{ fontSize: "14px", color: "#FF4811B2" }}
+                        >
+                          <span style={{ fontSize: "14px" }}>Name:</span>
+                          {task.name}
+                        </h5>
                         <p className="task-description mb-1">
                           <span>Details:</span>
                           {task.description?.slice(0, 10)} more...
@@ -236,6 +330,9 @@ function HomeDashBoard() {
                         <small className="task-assigned">
                           <span>Team:</span> {task.employee_name}
                         </small>
+                        <p className="task-assigned my-2">
+                          <span>Deadline:</span> {task.deadline}
+                        </p>
                         <img
                           className="taskIcon"
                           src={taskIcon}

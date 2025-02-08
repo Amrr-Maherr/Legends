@@ -11,16 +11,18 @@ function Profile() {
   const [newDepartment, setNewDepartment] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newImage, setNewImage] = useState(null);
-  const [newBankAccount, setNewBankAccount] = useState(""); // حالة جديدة لـ Bank Account
+  const [newBankAccount, setNewBankAccount] = useState("");
   const [shifts, setShifts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const token = JSON.parse(localStorage.getItem("AuthToken"));
-  const API_BASE_URL = "https://test.ashlhal.com/api";
-  const API_ENDPOINT = `${API_BASE_URL}/profile`;
-  const UPDATE_PROFILE_ENDPOINT = `${API_BASE_URL}/update-profile`;
-  const SHIFTS_ENDPOINT = `${API_BASE_URL}/shifts`;
+
+  const API_ENDPOINT = "https://test.ashlhal.com/api/profile";
+  const UPDATE_PROFILE_ENDPOINT = "https://test.ashlhal.com/api/update-profile";
+  const SHIFTS_ENDPOINT = "https://test.ashlhal.com/api/shifts";
+  const START_SHIFT_ENDPOINT = "https://test.ashlhal.com/api/shifts";
+  const END_SHIFT_ENDPOINT = "https://test.ashlhal.com/api/shifts";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +40,7 @@ function Profile() {
           setNewName(profileData.name || "");
           setNewDepartment(profileData.department?.name || "");
           setNewEmail(profileData.email || "");
-          setNewBankAccount(profileData.bank_account || ""); // تعيين قيمة أولية لـ Bank Account
+          setNewBankAccount(profileData.bank_account || "");
         } else {
           throw new Error("Invalid profile data");
         }
@@ -78,8 +80,8 @@ function Profile() {
     setNewName(Data?.name || "");
     setNewDepartment(Data?.department?.name || "");
     setNewEmail(Data?.email || "");
+    setNewBankAccount(Data?.bank_account || "");
     setNewImage(null);
-    setNewBankAccount(Data?.bank_account || ""); // إعادة تعيين Bank Account عند الإلغاء
   };
 
   const handleSaveClick = async () => {
@@ -87,7 +89,7 @@ function Profile() {
     formData.append("name", newName);
     formData.append("email", newEmail);
     formData.append("department", newDepartment);
-    formData.append("bank_account", newBankAccount); // إضافة Bank Account إلى FormData
+    formData.append("bank_account", newBankAccount);
     if (newImage) {
       formData.append("image", newImage);
     }
@@ -96,6 +98,7 @@ function Profile() {
       const response = await axios.post(UPDATE_PROFILE_ENDPOINT, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -135,92 +138,57 @@ function Profile() {
   };
 
   const handleStartShift = async (shiftId) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to start this shift?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, start it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.post(
-            `${API_BASE_URL}/shifts/${shiftId}/start`,
-            {},
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-
-          console.log(`Shift ${shiftId} started successfully!`, response.data);
-          Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Shift started successfully!",
-          });
-
-          setShifts((prevShifts) =>
-            prevShifts.map((shift) =>
-              shift.id === shiftId ? { ...shift, status: "active" } : shift
-            )
-          );
-        } catch (error) {
-          console.error("Error starting shift:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: error.response?.data?.message || "Failed to start the shift.",
-          });
+    try {
+      const response = await axios.post(
+        `${START_SHIFT_ENDPOINT}/${shiftId}/start`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-      }
-    });
+      );
+
+      console.log(`Shift ${shiftId} started!`, response.data);
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: `Shift ${shiftId} started successfully!`,
+      });
+      fetchShifts(); // Refresh shifts after start
+    } catch (error) {
+      console.error("Error starting shift:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to start shift",
+      });
+    }
   };
 
   const handleEndShift = async (shiftId) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to end this shift?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, end it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.post(
-            `${API_BASE_URL}/shifts/${shiftId}/end`,
-            {},
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-
-          console.log(`Shift ${shiftId} ended successfully!`, response.data);
-
-          Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Shift ended successfully!",
-          });
-
-          setShifts((prevShifts) =>
-            prevShifts.map((shift) =>
-              shift.id === shiftId ? { ...shift, status: "completed" } : shift
-            )
-          );
-        } catch (error) {
-          console.error("Error ending shift:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: error.response?.data?.message || "Failed to end the shift.",
-          });
+    try {
+      const response = await axios.post(
+        `${END_SHIFT_ENDPOINT}/${shiftId}/end`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-      }
-    });
+      );
+
+      console.log(`Shift ${shiftId} ended!`, response.data);
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: `Shift ${shiftId} ended successfully!`,
+      });
+      fetchShifts(); // Refresh shifts after end
+    } catch (error) {
+      console.error("Error ending shift:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to end shift",
+      });
+    }
   };
 
   const fetchShifts = async () => {
@@ -258,7 +226,7 @@ function Profile() {
     }
 
     if (hour === 0) {
-      hour = 12;
+      hour = 12; // منتصف الليل
     }
 
     return `${hour}:${minutes} ${period}`;
@@ -274,6 +242,7 @@ function Profile() {
             <div className="card bg-dark text-white">
               <div className="card-body">
                 {isEditing ? (
+                  // فورم التعديل
                   <div>
                     <h5 className="card-title">Edit Profile</h5>
                     <div className="mb-3">
@@ -303,7 +272,7 @@ function Profile() {
                         onChange={(e) => setNewEmail(e.target.value)}
                       />
                     </div>
-                    {/* إضافة حقل Bank Account */}
+
                     <div className="mb-3">
                       <label className="form-label">Bank Account:</label>
                       <input
@@ -337,6 +306,7 @@ function Profile() {
                     </button>
                   </div>
                 ) : (
+                  // عرض معلومات الملف الشخصي
                   <div>
                     <h5 className="card-title">Profile Information</h5>
                     <div className="text-center mb-3">
@@ -364,10 +334,11 @@ function Profile() {
                     <p className="card-text">
                       <strong>Email:</strong> {Data?.email}
                     </p>
-                    {/* إضافة عرض Bank Account */}
-                    <p className="card-text">
-                      <strong>Bank Account:</strong> {Data?.bank_account}
-                    </p>
+                    {Data?.bank_account && (
+                      <p className="card-text">
+                        <strong>Bank Account:</strong> {Data?.bank_account}
+                      </p>
+                    )}
                     <button
                       className="btn btn-primary"
                       onClick={handleEditClick}
@@ -401,39 +372,22 @@ function Profile() {
                           <td>{shift.id}</td>
                           <td>{shift.employee_name}</td>
                           <td>{convertTo12Hour(shift.from)}</td>
-                          <td>{shift.to}</td>
+                          <td>{convertTo12Hour(shift.to)}</td>
                           <td>{shift.day}</td>
                           <td>{shift.status}</td>
                           <td>
-                            {/*  الزر يعرض بناءً على حالة الوردية */}
-                            {shift.status === "active" ? (
-                              // If shift is active, show only the "End" button
-                              <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleEndShift(shift.id)}
-                              >
-                                End
-                              </button>
-                            ) : shift.status === "completed" ? (
-                              // If shift is completed, show the "Completed" message
-                              <span>Shift Completed</span>
-                            ) : (
-                              // If shift is neither active nor completed, show both buttons
-                              <>
-                                <button
-                                  className="btn btn-success btn-sm me-1"
-                                  onClick={() => handleStartShift(shift.id)}
-                                >
-                                  Start
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() => handleEndShift(shift.id)}
-                                >
-                                  End
-                                </button>
-                              </>
-                            )}
+                            <button
+                              className="btn btn-success btn-sm me-1"
+                              onClick={() => handleStartShift(shift.id)}
+                            >
+                              Start
+                            </button>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleEndShift(shift.id)}
+                            >
+                              End
+                            </button>
                           </td>
                         </tr>
                       ))}

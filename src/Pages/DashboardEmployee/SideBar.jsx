@@ -64,6 +64,11 @@ function SideBar() {
           </Link>
         </li>
         <li>
+          <Link to="/employee-dashboard/all-tasks">
+            <i className="fa fa-tasks"></i> All Tasks
+          </Link>
+        </li>
+        <li>
           <Link to="#" onClick={handleLogout}>
             {" "}
             {/* تغيير الرابط واستخدام onClick */}

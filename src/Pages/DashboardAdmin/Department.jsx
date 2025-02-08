@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "../../Style/Admin/Department/Department.css"; // تأكد من أن ملف CSS مرفق في المشروع
 import Loader from "../../Components/Loader/Loader"; // استيراد مكون Loader
+import Swal from "sweetalert2"; // استيراد SweetAlert2
 
 function Department() {
   const { id } = useParams(); // هذا هو اسم القسم
@@ -49,30 +50,50 @@ function Department() {
   }, [id, token]);
 
   const handleDeleteEmployee = async (employeeId) => {
-    try {
-      // Send a POST request to delete the employee
-      const response = await axios.post(
-        `https://test.ashlhal.com/api/delete-employee/${employeeId}`,
-        {}, // Empty body, as the ID is in the URL
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // Send a POST request to delete the employee
+          const response = await axios.post(
+            `https://test.ashlhal.com/api/delete-employee/${employeeId}`,
+            {}, // Empty body, as the ID is in the URL
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-      if (response.status === 200) {
-        // If deletion was successful, update the employees list
-        setEmployees((prevEmployees) =>
-          prevEmployees.filter((employee) => employee.id !== employeeId)
-        );
-        setError(null);
-        console.log("Employee deleted successfully");
-      } else {
-        throw new Error("Failed to delete employee");
+          if (response.status === 200) {
+            // If deletion was successful, update the employees list
+            setEmployees((prevEmployees) =>
+              prevEmployees.filter((employee) => employee.id !== employeeId)
+            );
+            setError(null);
+            console.log("Employee deleted successfully");
+
+            // Show success message
+            Swal.fire("Deleted!", "Employee has been deleted.", "success");
+          } else {
+            throw new Error("Failed to delete employee");
+          }
+        } catch (error) {
+          console.error("Error deleting employee:", error);
+          setError(`Error deleting employee: ${error.message}`);
+          Swal.fire(
+            "Error!",
+            `Failed to delete employee: ${error.message}`,
+            "error"
+          );
+        }
       }
-    } catch (error) {
-      console.error("Error deleting employee:", error);
-      setError(`Error deleting employee: ${error.message}`);
-    }
+    });
   };
 
   return (
@@ -87,14 +108,24 @@ function Department() {
               {employees.map((employee) => (
                 <div className="col-md-3" key={employee.id}>
                   <div className="employee-de-card my-3">
-                    <div>
-                      <p>{employee.name}</p>
+                    <div style={{ width: "50px", height: "50px" }}>
+                      <img
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "50%",
+                        }}
+                        src={employee.image}
+                        alt=""
+                      />
                     </div>
-                    <div>
-                      <button onClick={() => handleDeleteEmployee(employee.id)}>
+                    <div className="d-flex w-100 justify-content-evenly">
+                      <p>{employee.name}</p>
+                      <button className="btn" onClick={() => handleDeleteEmployee(employee.id)}>
                         Delete
                       </button>
                     </div>
+                    <div></div>
                   </div>
                 </div>
               ))}

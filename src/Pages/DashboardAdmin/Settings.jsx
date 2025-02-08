@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Style/Admin/Settings/Settings.css";
 import Loader from "../../Components/Loader/Loader"; // استيراد مكون Loader
+import Swal from "sweetalert2"; // استيراد SweetAlert2
 
 function Settings() {
   const [employees, setEmployees] = useState([]);
@@ -38,30 +39,49 @@ function Settings() {
   }, [token]);
 
   const handleDeleteEmployee = async (employeeId) => {
-    try {
-      const response = await axios.post(
-        `https://test.ashlhal.com/api/delete-employee/${employeeId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(
+            `https://test.ashlhal.com/api/delete-employee/${employeeId}`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-      if (response.status === 200) {
-        setEmployees((prevEmployees) =>
-          prevEmployees.filter((employee) => employee.id !== employeeId)
-        );
-        setError(null);
-        console.log("Employee deleted successfully");
-      } else {
-        throw new Error(
-          `Failed to delete employee. Status: ${response.status}`
-        );
+          if (response.status === 200) {
+            setEmployees((prevEmployees) =>
+              prevEmployees.filter((employee) => employee.id !== employeeId)
+            );
+            setError(null);
+            console.log("Employee deleted successfully");
+
+            Swal.fire("Deleted!", "Employee has been deleted.", "success");
+          } else {
+            throw new Error(
+              `Failed to delete employee. Status: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.error("Error deleting employee:", error);
+          setError(`Error deleting employee: ${error.message}`);
+          Swal.fire(
+            "Error!",
+            `Failed to delete employee: ${error.message}`,
+            "error"
+          );
+        }
       }
-    } catch (error) {
-      console.error("Error deleting employee:", error);
-      setError(`Error deleting employee: ${error.message}`);
-    }
+    });
   };
 
   return (

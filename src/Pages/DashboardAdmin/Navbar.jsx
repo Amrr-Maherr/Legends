@@ -2,15 +2,17 @@ import AddIcon from "../../Assets/addIcon.svg";
 import "../../Style/Admin/AdminNavBar/Navbar.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2"; // استيراد SweetAlert2
 
 function Navbar() {
   const token = JSON.parse(localStorage.getItem("AuthToken"));
   const [Data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [TaskName,setTaskName] = useState("")
-  const [TaskText,setTaskText] = useState("")
-  const [TaskEmployee,setTaskEmployee] = useState("")
-  const [TaskImage,setTaskImage] = useState("")
+  const [TaskName, setTaskName] = useState("");
+  const [TaskText, setTaskText] = useState("");
+  const [TaskEmployee, setTaskEmployee] = useState("");
+  const [TaskImage, setTaskImage] = useState(null);
+  const [TaskDeadline, setTaskDeadline] = useState(""); // حالة لـ Deadline
 
   useEffect(() => {
     axios
@@ -28,33 +30,67 @@ function Navbar() {
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-      if (!TaskName || !TaskText || !TaskEmployee || !TaskImage) {
-          alert("")
+
+    if (
+      !TaskName ||
+      !TaskText ||
+      !TaskEmployee ||
+      !TaskImage ||
+      !TaskDeadline
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Please fill in all fields.",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", TaskName);
+    formData.append("employee_id", TaskEmployee);
+    formData.append("description", TaskText);
+    formData.append("image", TaskImage); // إلحاق الملف بالـ FormData
+    formData.append("deadline", TaskDeadline); // إضافة حقل Deadline
+
+    try {
+      const response = await axios.post(
+        "https://test.ashlhal.com/api/tasks",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Task added successfully.",
+        });
+        handleCloseModal();
+        // إعادة تهيئة الحقول بعد النجاح
+        setTaskName("");
+        setTaskText("");
+        setTaskEmployee("");
+        setTaskImage(null);
+        setTaskDeadline("");
       } else {
-          const FormData = {
-            name: TaskName,
-            employee_id: TaskEmployee,
-            description: TaskText,
-            image: TaskImage,
-          };
-          axios
-            .post("https://test.ashlhal.com/api/tasks", FormData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then((response) => {
-              alert("yes");
-              handleCloseModal();
-            })
-            .catch((error) => {
-              alert("Error adding task");
-              console.error(error.response.data.message);
-            });
+        throw new Error(`Failed to add task. Status code: ${response.status}`);
       }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: `Error adding task: ${error.message}`,
+      });
+      console.error("Error adding task:", error);
+    }
   };
 
   return (
@@ -64,7 +100,14 @@ function Navbar() {
         <span>Employee</span>
       </div>
       <ul className="navbar-menu">
-        <img src={AddIcon} alt="Add Task" onClick={handleShowModal} />
+        <div
+          onClick={handleShowModal}
+          style={{ cursor: "pointer" }}
+          className="d-flex align-items-center gap-2"
+        >
+          Add Shift
+          <img src={AddIcon} alt="Add Task" />
+        </div>
       </ul>
 
       {/* Modal */}
@@ -85,7 +128,7 @@ function Navbar() {
                 aria-label="Close"
                 onClick={handleCloseModal}
               >
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">×</span>
               </button>
             </div>
             <div className="modal-body">
@@ -96,24 +139,22 @@ function Navbar() {
                     type="text"
                     className="form-control"
                     id="taskName"
-                    name="taskName"
+                    name="name"
                     value={TaskName}
-                    onChange={(event) => {
-                      setTaskName(event.target.value);
-                    }}
+                    onChange={(e) => setTaskName(e.target.value)}
                     placeholder="Enter task name"
+                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="employeeId">Employee ID</label>
+                  <label htmlFor="employeeId">Employee</label>
                   <select
-                    onChange={(event) => {
-                      setTaskEmployee(event.target.value);
-                    }}
                     className="form-control"
                     id="employeeId"
-                    name="employeeId"
+                    name="employee_id"
                     value={TaskEmployee}
+                    onChange={(e) => setTaskEmployee(e.target.value)}
+                    required
                   >
                     <option value="">Select Employee</option>
                     {Data.map((employee) => (
@@ -129,10 +170,24 @@ function Navbar() {
                     className="form-control"
                     id="description"
                     name="description"
-                    onChange={(event) => {
-                      setTaskText(event.target.value);
-                    }}
+                    value={TaskText}
+                    onChange={(e) => setTaskText(e.target.value)}
                     placeholder="Enter task description"
+                    required
+                  />
+                </div>
+                {/* حقل Deadline */}
+                <div className="form-group">
+                  <label htmlFor="deadline">Deadline</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="deadline"
+                    name="deadline"
+                    value={TaskDeadline}
+                    onChange={(e) => setTaskDeadline(e.target.value)}
+                    placeholder="Enter deadline"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -142,30 +197,23 @@ function Navbar() {
                     className="form-control"
                     id="image"
                     name="image"
-                    onChange={(event) => {
-                      setTaskImage(event.target.files[0]);
-                    }}
+                    onChange={(e) => setTaskImage(e.target.files[0])}
+                    required
                   />
                 </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={handleCloseModal}
+                  >
+                    Close
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Add Task
+                  </button>
+                </div>
               </form>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handleCloseModal}
-              >
-                Close
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primar"
-                onClick={(event) => {
-                  handleSubmit(event);
-                }}
-              >
-                Add Task
-              </button>
             </div>
           </div>
         </div>

@@ -20,6 +20,9 @@ import EmployeeRoleAssignment from "./Pages/EmployeeAuthentication/EmployeeRoleA
 import DashboardEmployee from "./Pages/DashboardEmployee/DashboardEmployee";
 import HomeDashboard from "./Pages/DashboardEmployee/HomeDashboard";
 import Profile from "./Pages/DashboardEmployee/Profile";
+import EmployeeTaskDetails from "./Pages/DashboardEmployee/EmployyTaskDetails";
+import AllTasks from "./Pages/DashboardEmployee/AllTasks";
+import Tasks from "./Pages/DashboardAdmin/Tasks";
 
 function App() {
   return (
@@ -37,6 +40,7 @@ function App() {
               <Route path="departments" element={<Departments />} />
               <Route path="shifts" element={<Shifts />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="all-tasks" element={<Tasks/>} />
               <Route path="task-details/:id" element={<TaskDetails />} />
               <Route path="department/:id" element={<Department />} />
               {/*  */}
@@ -51,7 +55,8 @@ function App() {
             <Route path="employee-dashboard" element={<DashboardEmployee />}>
               <Route path="employee-home" element={<HomeDashboard/>} />
               <Route path="employee-profile" element={<Profile/>} />
-              <Route path="task-details/:id" element={<TaskDetails/>} />
+              <Route path="all-tasks" element={<AllTasks/>} />
+              <Route path="employee-task-details/:id" element={<EmployeeTaskDetails/>} />
             </Route>
           </Routes>
         </div>

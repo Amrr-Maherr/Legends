@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Style/Admin/Shifts/Shifts.css";
 import Loader from "../../Components/Loader/Loader"; // استيراد مكون Loader
+import Swal from "sweetalert2"; // استيراد SweetAlert2
+import moment from "moment"; // استيراد moment
 
 function Shifts() {
   const [shifts, setShifts] = useState([]);
@@ -96,6 +98,12 @@ function Shifts() {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
   };
 
+  // دالة لتنسيق التاريخ والوقت باستخدام moment.js لعرض التاريخ والوقت بتنسيق 12 ساعة
+  const formatTime12Hour = (dateTime) => {
+    if (!dateTime) return "";
+    return moment(dateTime).format("YYYY-MM-DD hh:mm A"); // تنسيق التاريخ والوقت إلى YYYY-MM-DD HH:mm AM/PM
+  };
+
   // دالة لمعالجة النقر على زر "إضافة مناوبة"
   const handleAddShiftClick = () => {
     setShowModal(true); // عرض الموديل
@@ -133,12 +141,24 @@ function Shifts() {
         setShifts((prevShifts) => [...prevShifts, response.data.data]); // Assuming the API returns the new shift data in response.data.data
         handleCloseModal(); // Close the modal
         console.log("Shift added successfully");
+
+        // Show success message using SweetAlert2
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Shift added successfully.",
+        });
       } else {
         throw new Error(`Failed to add shift. Status code: ${response.status}`);
       }
     } catch (error) {
       console.error("Error adding shift:", error);
       setError(`Error adding shift: ${error.message}`);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: `Failed to add shift: ${error.message}`,
+      });
     }
   };
 
@@ -158,10 +178,11 @@ function Shifts() {
               <tr>
                 <th>Employee ID</th>
                 <th>Employee Name</th>
-                <th>From</th>
-                <th>To</th>
+                <th>From-To</th>
                 <th>Day</th>
                 <th>Status</th>
+                <th>Started At</th> {/* إضافة عمود Started At */}
+                <th>Ended At</th> {/* إضافة عمود Ended At */}
               </tr>
             </thead>
             <tbody>
@@ -169,10 +190,19 @@ function Shifts() {
                 <tr key={shift.id}>
                   <td>{shift.employee_id}</td>
                   <td>{shift.employee_name}</td>
-                  <td>{convertTo12Hour(shift.from)}</td> {/* تحويل الوقت */}
-                  <td>{convertTo12Hour(shift.to)}</td> {/* تحويل الوقت */}
+                  <td>
+                    <div className="bg-danger rounded p-2">
+                      <div>{convertTo12Hour(shift.from)}</div>
+                      <div>{convertTo12Hour(shift.to)}</div>
+                    </div>
+                  </td>{" "}
+                  {/* تحويل الوقت */}
                   <td>{shift.day}</td>
                   <td>{shift.status}</td>
+                  <td>{formatTime12Hour(shift.started_at)}</td>{" "}
+                  {/* عرض Started At بتنسيق 12 ساعة */}
+                  <td>{formatTime12Hour(shift.ended_at)}</td>{" "}
+                  {/* عرض Ended At بتنسيق 12 ساعة */}
                 </tr>
               ))}
             </tbody>

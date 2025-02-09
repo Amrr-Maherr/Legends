@@ -51,7 +51,7 @@ function Departments() {
     <>
       {loading && <Loader />} {/* عرض اللودر إذا كانت حالة التحميل صحيحة */}
       <section>
-        <div className="container">
+        <div className="container mt-5">
           <div className="row">
             {!loading &&
               departments.map((department) => (

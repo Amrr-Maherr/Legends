@@ -85,34 +85,12 @@ function Shifts() {
 
   const convertTo12Hour = (time24) => {
     if (!time24) return "";
-    if (typeof time24 !== "string" || !/^\d{2}:\d{2}:\d{2}$/.test(time24)) {
-      return "Invalid Time";
-    }
-
-    const [hours, minutes, seconds] = time24.split(":");
-    let hours12 = parseInt(hours);
-    const ampm = hours12 >= 12 ? "PM" : "AM";
-    hours12 = hours12 % 12;
-    hours12 = hours12 ? hours12 : 12;
-
-    const formattedHours = String(hours12).padStart(2, "0");
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(seconds).padStart(2, "0");
-
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+    return moment(time24, "HH:mm:ss").format("hh:mm:ss A");
   };
 
   const formatTime12Hour = (dateTime) => {
     if (!dateTime) return "";
-
-    // Check if the dateTime is a valid date
-    if (!moment(dateTime).isValid()) {
-      console.error("Invalid date time:", dateTime);
-      return "Invalid Date";
-    }
-
-    // Extract the desired part of the string
-    return dateTime.slice(0, 19).replace("T", " ");
+    return moment(dateTime).format("YYYY-MM-DD HH:mm:ss");
   };
 
   const handleAddShiftClick = () => {
@@ -166,6 +144,54 @@ function Shifts() {
     }
   };
 
+  // دالة لحذف المناوبة
+  const handleDeleteShift = async (shiftId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setLoading(true); // Show loader
+          const response = await axios.delete(
+            `https://test.ashlhal.com/api/shifts/${shiftId}`, //  تم التحديث هنا
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (response.status === 200 || response.status === 204) {
+            // حذف المناوبة من حالة shifts
+            setShifts((prevShifts) =>
+              prevShifts.filter((shift) => shift.id !== shiftId)
+            );
+
+            Swal.fire("Deleted!", "Your shift has been deleted.", "success");
+          } else {
+            throw new Error(
+              `Failed to delete shift. Status code: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.error("Error deleting shift:", error);
+          setError(`Error deleting shift: ${error.message}`);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: `Failed to delete shift: ${error.message}`,
+          });
+        } finally {
+          setLoading(false); // Hide loader
+        }
+      }
+    });
+  };
+
   const daysOfWeek = [
     "saturday",
     "sunday",
@@ -196,6 +222,7 @@ function Shifts() {
                 <th>Status</th>
                 <th>Started At</th>
                 <th>Ended At</th>
+                <th>Actions</th> {/* عمود جديد لزر الحذف */}
               </tr>
             </thead>
             <tbody>
@@ -213,6 +240,15 @@ function Shifts() {
                   <td>{shift.status}</td>
                   <td>{formatTime12Hour(shift.started_at)}</td>
                   <td>{formatTime12Hour(shift.ended_at)}</td>
+                  <td>
+                    {/* زر الحذف */}
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDeleteShift(shift.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

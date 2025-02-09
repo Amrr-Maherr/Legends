@@ -138,7 +138,7 @@ function HomeDashboard() {
                     />
                   </div>
                 </div>
-                <div className="col-xl-4 my-tasks-col d-flex flex-column-reverse">
+                <div className="col-xl-4 my-tasks-col">
                   {TasksData.map((task) => (
                     <div
                       className="my-tasks-card"

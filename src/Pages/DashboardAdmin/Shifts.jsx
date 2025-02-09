@@ -192,7 +192,17 @@ function Shifts() {
     localHours = localHours % 12;
     localHours = localHours ? localHours : 12; // the hour '0' should be '12'
     const minutesStr = localMinutes < 10 ? "0" + localMinutes : localMinutes;
-    return localHours + ":" + minutesStr + " " + ampm;
+
+    // Format the date
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-based
+    const year = date.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return {
+      time: `${localHours}:${minutesStr} ${ampm}`,
+      date: formattedDate,
+    };
   };
 
   // Style object for table cells to avoid repetition
@@ -244,33 +254,7 @@ function Shifts() {
                             }}
                             scope="col"
                           >
-                            Actions
-                          </th>
-                          <th
-                            style={{
-                              fontSize: "32px",
-                              color: "#FF4811",
-                              fontWeight: "300",
-                              backgroundColor: "black",
-                              borderBottom: "none",
-                              padding: "15px",
-                            }}
-                            scope="col"
-                          >
-                            Status
-                          </th>
-                          <th
-                            style={{
-                              fontSize: "32px",
-                              color: "#FF4811",
-                              fontWeight: "300",
-                              backgroundColor: "black",
-                              borderBottom: "none",
-                              padding: "15px",
-                            }}
-                            scope="col"
-                          >
-                            Day
+                            Name
                           </th>
                           <th
                             style={{
@@ -296,7 +280,33 @@ function Shifts() {
                             }}
                             scope="col"
                           >
-                            Name
+                            Day
+                          </th>
+                          <th
+                            style={{
+                              fontSize: "32px",
+                              color: "#FF4811",
+                              fontWeight: "300",
+                              backgroundColor: "black",
+                              borderBottom: "none",
+                              padding: "15px",
+                            }}
+                            scope="col"
+                          >
+                            Status
+                          </th>
+                          <th
+                            style={{
+                              fontSize: "32px",
+                              color: "#FF4811",
+                              fontWeight: "300",
+                              backgroundColor: "black",
+                              borderBottom: "none",
+                              padding: "15px",
+                            }}
+                            scope="col"
+                          >
+                            Actions
                           </th>
                         </tr>
                       </thead>
@@ -311,27 +321,7 @@ function Shifts() {
                           <>
                             {Data.map((shift) => (
                               <tr key={shift.id}>
-                                <td style={cellStyle}>
-                                  <button
-                                    style={{
-                                      background: "none",
-                                      border: "none",
-                                      color: "white",
-                                      cursor: "pointer",
-                                      fontSize: "22px",
-                                    }}
-                                    onClick={() => handleDeleteShift(shift.id)}
-                                    disabled={isSubmitting}
-                                  >
-                                    <i
-                                      style={{ color: "#FF4811" }}
-                                      className="fa fa-trash"
-                                      aria-hidden="true"
-                                    ></i>
-                                  </button>
-                                </td>
-                                <td style={cellStyle}>{shift.status}</td>
-                                <td style={cellStyle}>{shift.day}</td>
+                                <td style={cellStyle}>{shift.employee_name}</td>
                                 <td
                                   style={{
                                     ...cellStyle,
@@ -357,7 +347,9 @@ function Shifts() {
                                         padding: "10px",
                                       }}
                                     >
-                                      {formatTime(shift.started_at)}
+                                      {formatTime(shift.started_at)?.time}
+                                      <br /> {/* Add line break */}
+                                      {formatTime(shift.started_at)?.date}
                                     </p>
                                   </div>
                                   <div className="w-50 mx-3">
@@ -379,11 +371,33 @@ function Shifts() {
                                         padding: "10px",
                                       }}
                                     >
-                                      {formatTime(shift.ended_at)}
+                                      {formatTime(shift.ended_at)?.time}
+                                      <br /> {/* Add line break */}
+                                      {formatTime(shift.ended_at)?.date}
                                     </p>
                                   </div>
                                 </td>
-                                <td style={cellStyle}>{shift.employee_name}</td>
+                                <td style={cellStyle}>{shift.day}</td>
+                                <td style={cellStyle}>{shift.status}</td>
+                                <td style={cellStyle}>
+                                  <button
+                                    style={{
+                                      background: "none",
+                                      border: "none",
+                                      color: "white",
+                                      cursor: "pointer",
+                                      fontSize: "22px",
+                                    }}
+                                    onClick={() => handleDeleteShift(shift.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <i
+                                      style={{ color: "#FF4811" }}
+                                      className="fa fa-trash"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                </td>
                               </tr>
                             ))}
                           </>

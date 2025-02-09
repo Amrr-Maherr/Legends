@@ -278,7 +278,7 @@ function Shifts() {
                             }}
                             scope="col"
                           >
-                            Shift
+                            Day
                           </th>
                           <th
                             style={{
@@ -304,7 +304,7 @@ function Shifts() {
                             }}
                             scope="col"
                           >
-                            Day
+                            Status
                           </th>
                           <th
                             style={{
@@ -317,7 +317,7 @@ function Shifts() {
                             }}
                             scope="col"
                           >
-                            Status
+                            Shift
                           </th>
                           <th
                             style={{
@@ -346,6 +346,30 @@ function Shifts() {
                             {Data.map((shift) => (
                               <tr key={shift.id}>
                                 <td style={cellStyle}>{shift.employee_name}</td>
+                                <td style={cellStyle}>{shift.day}</td>
+                                <td style={cellStyle}>
+                                  <div
+                                    style={{
+                                      backgroundColor: "#00695c",
+                                      margin: "0",
+                                      padding: "10px",
+                                      borderTopLeftRadius: "8px",
+                                      borderTopRightRadius: "8px",
+                                    }}
+                                  >
+                                    {convertTo12Hour(shift.from)}
+                                  </div>
+                                  <div
+                                    style={{
+                                      backgroundColor: "#004d60",
+                                      margin: "0",
+                                      padding: "10px",
+                                    }}
+                                  >
+                                    {convertTo12Hour(shift.to)}
+                                  </div>
+                                </td>
+                                <td style={cellStyle}>{shift.status}</td>
                                 <td
                                   style={{
                                     ...cellStyle,
@@ -401,30 +425,6 @@ function Shifts() {
                                     </p>
                                   </div>
                                 </td>
-                                <td style={cellStyle}>
-                                  <div
-                                    style={{
-                                      backgroundColor: "#00695c",
-                                      margin: "0",
-                                      padding: "10px",
-                                      borderTopLeftRadius: "8px",
-                                      borderTopRightRadius: "8px",
-                                    }}
-                                  >
-                                    {convertTo12Hour(shift.from)}
-                                  </div>
-                                  <div
-                                    style={{
-                                      backgroundColor: "#004d60",
-                                      margin: "0",
-                                      padding: "10px",
-                                    }}
-                                  >
-                                    {convertTo12Hour(shift.to)}
-                                  </div>
-                                </td>
-                                <td style={cellStyle}>{shift.day}</td>
-                                <td style={cellStyle}>{shift.status}</td>
                                 <td style={cellStyle}>
                                   <button
                                     style={{

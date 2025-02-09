@@ -12,15 +12,14 @@ function Shifts() {
     JSON.parse(localStorage.getItem("AuthToken"))
   );
   const [showModal, setShowModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // State for submit loading
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newShift, setNewShift] = useState({
     employee_id: "",
     from: "",
     to: "",
     day: "",
   });
-  const [employees, setEmployees] = useState([]); // State to store employees
-
+  const [employees, setEmployees] = useState([]);
   const daysOfWeek = [
     "saturday",
     "sunday",
@@ -205,6 +204,18 @@ function Shifts() {
     };
   };
 
+  // Function to convert 24-hour time to 12-hour time with AM/PM
+  const convertTo12Hour = (time24) => {
+    if (!time24) return "";
+
+    const [hours, minutes] = time24.split(":").map(Number);
+    let hours12 = hours % 12;
+    hours12 = hours12 === 0 ? 12 : hours12; // the hour '0' should be '12'
+    const ampm = hours < 12 ? "AM" : "PM";
+
+    return `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+  };
+
   // Style object for table cells to avoid repetition
   const cellStyle = {
     fontSize: "22px",
@@ -268,6 +279,19 @@ function Shifts() {
                             scope="col"
                           >
                             Shift
+                          </th>
+                          <th
+                            style={{
+                              fontSize: "32px",
+                              color: "#FF4811",
+                              fontWeight: "300",
+                              backgroundColor: "black",
+                              borderBottom: "none",
+                              padding: "15px",
+                            }}
+                            scope="col"
+                          >
+                            From-To
                           </th>
                           <th
                             style={{
@@ -375,6 +399,28 @@ function Shifts() {
                                       <br /> {/* Add line break */}
                                       {formatTime(shift.ended_at)?.date}
                                     </p>
+                                  </div>
+                                </td>
+                                <td style={cellStyle}>
+                                  <div
+                                    style={{
+                                      backgroundColor: "#00695c",
+                                      margin: "0",
+                                      padding: "10px",
+                                      borderTopLeftRadius: "8px",
+                                      borderTopRightRadius: "8px",
+                                    }}
+                                  >
+                                    {convertTo12Hour(shift.from)}
+                                  </div>
+                                  <div
+                                    style={{
+                                      backgroundColor: "#004d60",
+                                      margin: "0",
+                                      padding: "10px",
+                                    }}
+                                  >
+                                    {convertTo12Hour(shift.to)}
                                   </div>
                                 </td>
                                 <td style={cellStyle}>{shift.day}</td>

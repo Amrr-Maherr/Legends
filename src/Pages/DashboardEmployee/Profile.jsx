@@ -120,7 +120,7 @@ function Profile() {
           text: response.data.message || "Profile updated successfully!",
         });
       } else {
-        throw new Error("Invalid profile data after update");
+        throw new Error("Invalid profile data");
       }
     } catch (error) {
       console.error("Error updating profile:", error.response.data.message);
@@ -153,7 +153,7 @@ function Profile() {
         title: "Success!",
         text: `Shift ${shiftId} started successfully!`,
       });
-      fetchShifts(); // Refresh shifts after start
+      fetchShifts(shiftId); // Refresh specific shift after start
     } catch (error) {
       console.error("Error starting shift:", error);
       Swal.fire({
@@ -180,7 +180,7 @@ function Profile() {
         title: "Success!",
         text: `Shift ${shiftId} ended successfully!`,
       });
-      fetchShifts(); // Refresh shifts after end
+      fetchShifts(shiftId); // Refresh specific shift after end
     } catch (error) {
       console.error("Error ending shift:", error);
       Swal.fire({
@@ -191,12 +191,28 @@ function Profile() {
     }
   };
 
-  const fetchShifts = async () => {
+  const fetchShifts = async (shiftId = null) => {
     try {
-      const response = await axios.get(SHIFTS_ENDPOINT, {
+      let url = SHIFTS_ENDPOINT;
+      if (shiftId) {
+        url = `${SHIFTS_ENDPOINT}/${shiftId}`; // Fetch specific shift
+      }
+
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setShifts(response.data.data);
+
+      if (shiftId && response.data.data) {
+        // If fetching a specific shift, update it in the shifts array
+        setShifts((prevShifts) =>
+          prevShifts.map((shift) =>
+            shift.id === shiftId ? response.data.data : shift
+          )
+        );
+      } else {
+        // Otherwise, update the entire shifts array
+        setShifts(response.data.data);
+      }
     } catch (error) {
       console.error(
         "Error fetching shifts:",
@@ -399,21 +415,30 @@ function Profile() {
                                   {formatDate(shift.started_at)}
                                 </p>
                                 <p>
-                                  <strong>End:</strong>{" "}
+                                  <strong>End:</strong>
                                   {formatDate(shift.ended_at)}
                                 </p>
                               </div>
                             ) : (
                               <>
-                                {shift.status !== "start" && (
-                                  <button
-                                    className="btn btn-success btn-sm me-1"
-                                    onClick={() => handleStartShift(shift.id)}
-                                  >
-                                    Start
-                                  </button>
+                                {(shift.status === "neither" ||
+                                  shift.status === null) && (
+                                  <>
+                                    <button
+                                      className="btn btn-success btn-sm me-1"
+                                      onClick={() => handleStartShift(shift.id)}
+                                    >
+                                      Start
+                                    </button>
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() => handleEndShift(shift.id)}
+                                    >
+                                      End
+                                    </button>
+                                  </>
                                 )}
-                                {shift.status === "start" && (
+                                {shift.status === "started" && (
                                   <button
                                     className="btn btn-danger btn-sm"
                                     onClick={() => handleEndShift(shift.id)}

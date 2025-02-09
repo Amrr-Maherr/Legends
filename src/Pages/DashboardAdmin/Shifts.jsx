@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Style/Admin/Shifts/Shifts.css";
-import Loader from "../../Components/Loader/Loader"; // استيراد مكون Loader
-import Swal from "sweetalert2"; // استيراد SweetAlert2
-import moment from "moment"; // استيراد moment
+import Loader from "../../Components/Loader/Loader";
+import Swal from "sweetalert2";
+import moment from "moment";
 
 function Shifts() {
   const [shifts, setShifts] = useState([]);
-  const [employees, setEmployees] = useState([]); // State لقائمة الموظفين
+  const [employees, setEmployees] = useState([]);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false); // State لعرض/إخفاء الموديل
+  const [showModal, setShowModal] = useState(false);
   const [newShift, setNewShift] = useState({
     employee_id: "",
     from: "",
     to: "",
     day: "",
-  }); // State لتخزين بيانات المناوبة الجديدة
-  const [loading, setLoading] = useState(true); // حالة التحميل
+  });
+  const [loading, setLoading] = useState(true);
   const token = JSON.parse(localStorage.getItem("AuthToken"));
 
   useEffect(() => {
     const fetchShifts = async () => {
-      setLoading(true); // بداية التحميل
+      setLoading(true);
       try {
         const response = await axios.get(
           "https://test.ashlhal.com/api/shifts",
@@ -41,6 +41,8 @@ function Shifts() {
       } catch (error) {
         console.error("Error fetching shifts:", error);
         setError(`Error fetching shifts: ${error.message}`);
+      } finally {
+        setLoading(false); // Ensure loading is set to false after the API call
       }
     };
 
@@ -68,19 +70,21 @@ function Shifts() {
     };
 
     const fetchData = async () => {
-      // دالة لتجميع استدعاءات API
-      await Promise.all([fetchShifts(), fetchEmployees()]); // انتظر حتى يتم جلب البيانات
-      setLoading(false); // بعد انتهاء استدعاء كل الدوال، تم التحميل
+      try {
+        await Promise.all([fetchShifts(), fetchEmployees()]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError(`Error fetching data: ${error.message}`);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchData(); // استدعاء الدالة المجمعة
+    fetchData();
   }, [token]);
 
-  // دالة لتحويل الوقت إلى تنسيق 12 ساعة مع AM/PM
   const convertTo12Hour = (time24) => {
-    if (!time24) return ""; // Check if the time is null or undefined
-
-    // Check if the time24 is in correct format
+    if (!time24) return "";
     if (typeof time24 !== "string" || !/^\d{2}:\d{2}:\d{2}$/.test(time24)) {
       return "Invalid Time";
     }
@@ -89,7 +93,7 @@ function Shifts() {
     let hours12 = parseInt(hours);
     const ampm = hours12 >= 12 ? "PM" : "AM";
     hours12 = hours12 % 12;
-    hours12 = hours12 ? hours12 : 12; // إذا كان 0 يصبح 12
+    hours12 = hours12 ? hours12 : 12;
 
     const formattedHours = String(hours12).padStart(2, "0");
     const formattedMinutes = String(minutes).padStart(2, "0");
@@ -98,51 +102,43 @@ function Shifts() {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
   };
 
-  // دالة لتنسيق التاريخ والوقت باستخدام moment.js لعرض التاريخ والوقت بتنسيق 12 ساعة
   const formatTime12Hour = (dateTime) => {
     if (!dateTime) return "";
-    return moment(dateTime).format("YYYY-MM-DD hh:mm A"); // تنسيق التاريخ والوقت إلى YYYY-MM-DD HH:mm AM/PM
+    return moment(dateTime).format("YYYY-MM-DD hh:mm A");
   };
 
-  // دالة لمعالجة النقر على زر "إضافة مناوبة"
   const handleAddShiftClick = () => {
-    setShowModal(true); // عرض الموديل
+    setShowModal(true);
   };
 
-  // دالة لإغلاق الموديل
   const handleCloseModal = () => {
-    setShowModal(false); // إخفاء الموديل
-    setNewShift({ employee_id: "", from: "", to: "", day: "" }); // إعادة تهيئة بيانات المناوبة الجديدة
+    setShowModal(false);
+    setNewShift({ employee_id: "", from: "", to: "", day: "" });
     setError(null);
   };
 
-  // دالة لمعالجة تغيير قيمة حقل في النموذج
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewShift((prevShift) => ({ ...prevShift, [name]: value }));
   };
 
-  // دالة لمعالجة إرسال النموذج
   const handleFormSubmit = async (e) => {
-    e.preventDefault(); // منع إعادة تحميل الصفحة
+    e.preventDefault();
 
     try {
-      // Send a POST request to the API endpoint to add the new shift
       const response = await axios.post(
-        `https://test.ashlhal.com/api/shifts`, // Replace with your actual API endpoint
-        newShift, // Send the new shift data in the request body
+        `https://test.ashlhal.com/api/shifts`,
+        newShift,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (response.status === 201) {
-        // If the shift was added successfully, update the shifts list
-        setShifts((prevShifts) => [...prevShifts, response.data.data]); // Assuming the API returns the new shift data in response.data.data
-        handleCloseModal(); // Close the modal
+        setShifts((prevShifts) => [...prevShifts, response.data.data]);
+        handleCloseModal();
         console.log("Shift added successfully");
 
-        // Show success message using SweetAlert2
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -162,16 +158,25 @@ function Shifts() {
     }
   };
 
+  const daysOfWeek = [
+    "saturday",
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+  ];
+
   return (
     <>
-      {loading && <Loader />} {/* عرض اللودر إذا كانت حالة التحميل صحيحة */}
+      {loading && <Loader />}
       <h1 className="shifts-title">Shifts</h1>
       <button onClick={handleAddShiftClick} className="add-shifts">
         Add Shift
-      </button>{" "}
-      {/* إضافة زر "إضافة مناوبة" */}
+      </button>
       {error && <div style={{ color: "red" }}>{error}</div>}
-      {!loading && shifts.length > 0 ? ( // عرض المحتوى فقط إذا لم يكن هناك تحميل
+      {!loading && shifts.length > 0 ? (
         <div className="table-responsive mt-5">
           <table className="table table-bordered table-hover table-dark text-center">
             <thead>
@@ -181,8 +186,8 @@ function Shifts() {
                 <th>From-To</th>
                 <th>Day</th>
                 <th>Status</th>
-                <th>Started At</th> {/* إضافة عمود Started At */}
-                <th>Ended At</th> {/* إضافة عمود Ended At */}
+                <th>Started At</th>
+                <th>Ended At</th>
               </tr>
             </thead>
             <tbody>
@@ -195,23 +200,20 @@ function Shifts() {
                       <div>{convertTo12Hour(shift.from)}</div>
                       <div>{convertTo12Hour(shift.to)}</div>
                     </div>
-                  </td>{" "}
-                  {/* تحويل الوقت */}
+                  </td>
                   <td>{shift.day}</td>
                   <td>{shift.status}</td>
-                  <td>{formatTime12Hour(shift.started_at)}</td>{" "}
-                  {/* عرض Started At بتنسيق 12 ساعة */}
-                  <td>{formatTime12Hour(shift.ended_at)}</td>{" "}
-                  {/* عرض Ended At بتنسيق 12 ساعة */}
+                  <td>{(shift.started_at)}</td>
+                  <td>{(shift.ended_at)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       ) : (
-        !loading && <div>Loading shifts data...</div> // رسالة التحميل القديمة
+        !loading && <div>No shifts data available.</div>
       )}
-      {/* Modal */}
+
       {showModal && (
         <div className="modal fade show" style={{ display: "block" }}>
           <div className="modal-dialog" role="document">
@@ -228,7 +230,6 @@ function Shifts() {
                 </button>
               </div>
               <div className="modal-body">
-                {/* Form */}
                 <form onSubmit={handleFormSubmit}>
                   <div className="form-group">
                     <label htmlFor="employee_id">Employee</label>
@@ -258,7 +259,7 @@ function Shifts() {
                       value={newShift.from}
                       onChange={handleInputChange}
                       required
-                    ></input>
+                    />
                   </div>
                   <div className="form-group">
                     <label htmlFor="to">To</label>
@@ -283,13 +284,11 @@ function Shifts() {
                       required
                     >
                       <option value="">Select Day</option>
-                      <option value="monday">Monday</option>
-                      <option value="tuesday">Tuesday</option>
-                      <option value="wednesday">Wednesday</option>
-                      <option value="thursday">Thursday</option>
-                      <option value="friday">Friday</option>
-                      <option value="saturday">Saturday</option>
-                      <option value="sunday">Sunday</option>
+                      {daysOfWeek.map((day) => (
+                        <option key={day} value={day}>
+                          {day.charAt(0).toUpperCase() + day.slice(1)}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <button type="submit" className="btn btn-primary">

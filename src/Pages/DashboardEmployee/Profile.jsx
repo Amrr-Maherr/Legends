@@ -283,22 +283,26 @@ function Profile() {
                           <td>{shift.day}</td>
                           <td>{shift.status}</td>
                           <td>
-                            {/* إخفاء الأزرار إذا كانت حالة الوردية "ended" */}
-                            {shift.status !== "ended" ? (
-                              <>
-                                <button
-                                  className="btn btn-success btn-sm me-1"
-                                  onClick={() => handleStartShift(shift.id)}
-                                >
-                                  Start
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() => handleEndShift(shift.id)}
-                                >
-                                  End
-                                </button>
-                              </>
+                            {/* إخفاء زر "Start" إذا كانت حالة الوردية "started" أو "ended" */}
+                            {shift.status !== "started" &&
+                            shift.status !== "ended" ? (
+                              <button
+                                className="btn btn-success btn-sm me-1"
+                                onClick={() => handleStartShift(shift.id)}
+                              >
+                                Start
+                              </button>
+                            ) : null}
+
+                            {/* إظهار زر "End" إذا كانت حالة الوردية "started" وليست "ended" */}
+                            {shift.status === "started" &&
+                            shift.status !== "ended" ? (
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleEndShift(shift.id)}
+                              >
+                                End
+                              </button>
                             ) : null}
                           </td>
                         </tr>

@@ -104,7 +104,15 @@ function Shifts() {
 
   const formatTime12Hour = (dateTime) => {
     if (!dateTime) return "";
-    return moment(dateTime).format("YYYY-MM-DD hh:mm A");
+
+    // Check if the dateTime is a valid date
+    if (!moment(dateTime).isValid()) {
+      console.error("Invalid date time:", dateTime);
+      return "Invalid Date";
+    }
+
+    // Extract the desired part of the string
+    return dateTime.slice(0, 19).replace("T", " ");
   };
 
   const handleAddShiftClick = () => {
@@ -203,8 +211,8 @@ function Shifts() {
                   </td>
                   <td>{shift.day}</td>
                   <td>{shift.status}</td>
-                  <td>{(shift.started_at)}</td>
-                  <td>{(shift.ended_at)}</td>
+                  <td>{formatTime12Hour(shift.started_at)}</td>
+                  <td>{formatTime12Hour(shift.ended_at)}</td>
                 </tr>
               ))}
             </tbody>

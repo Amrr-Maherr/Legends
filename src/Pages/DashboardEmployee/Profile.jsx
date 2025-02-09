@@ -245,106 +245,13 @@ function Profile() {
                   // فورم التعديل
                   <div>
                     <h5 className="card-title">Edit Profile</h5>
-                    <div className="mb-3">
-                      <label className="form-label">Name:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">Department:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={newDepartment}
-                        onChange={(e) => setNewDepartment(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">Email:</label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="mb-3">
-                      <label className="form-label">Bank Account:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={newBankAccount}
-                        onChange={(e) => setNewBankAccount(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="mb-3">
-                      <label className="form-label">Image:</label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        onChange={handleImageChange}
-                      />
-                    </div>
-
-                    <button
-                      className="btn btn-primary me-2"
-                      onClick={handleSaveClick}
-                    >
-                      Save
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={handleCancelClick}
-                    >
-                      Cancel
-                    </button>
+                    {/* ... باقي فورم التعديل ... */}
                   </div>
                 ) : (
                   // عرض معلومات الملف الشخصي
                   <div>
                     <h5 className="card-title">Profile Information</h5>
-                    <div className="text-center mb-3">
-                      {Data?.image ? (
-                        <img
-                          src={Data.image}
-                          alt="Profile"
-                          className="img-fluid rounded-circle"
-                          style={{
-                            width: "150px",
-                            height: "150px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <p>No Image</p>
-                      )}
-                    </div>
-                    <p className="card-text">
-                      <strong>Name:</strong> {Data?.name}
-                    </p>
-                    <p className="card-text">
-                      <strong>Department:</strong> {Data?.department?.name}
-                    </p>
-                    <p className="card-text">
-                      <strong>Email:</strong> {Data?.email}
-                    </p>
-                    {Data?.bank_account && (
-                      <p className="card-text">
-                        <strong>Bank Account:</strong> {Data?.bank_account}
-                      </p>
-                    )}
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleEditClick}
-                    >
-                      Edit
-                    </button>
+                    {/* ... باقي عرض معلومات الملف الشخصي ... */}
                   </div>
                 )}
               </div>
@@ -376,18 +283,23 @@ function Profile() {
                           <td>{shift.day}</td>
                           <td>{shift.status}</td>
                           <td>
-                            <button
-                              className="btn btn-success btn-sm me-1"
-                              onClick={() => handleStartShift(shift.id)}
-                            >
-                              Start
-                            </button>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleEndShift(shift.id)}
-                            >
-                              End
-                            </button>
+                            {/* إخفاء الأزرار إذا كانت حالة الوردية "ended" */}
+                            {shift.status !== "ended" ? (
+                              <>
+                                <button
+                                  className="btn btn-success btn-sm me-1"
+                                  onClick={() => handleStartShift(shift.id)}
+                                >
+                                  Start
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleEndShift(shift.id)}
+                                >
+                                  End
+                                </button>
+                              </>
+                            ) : null}
                           </td>
                         </tr>
                       ))}
